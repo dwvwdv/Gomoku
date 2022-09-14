@@ -2,6 +2,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 
 
@@ -144,7 +145,26 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 
 
     }
-//        QPainter p(this);
+
+    if (clickPosRow > 0 && clickPosRow < BOARD_GRAD_SIZE &&
+            clickPosCol > 0 && clickPosCol < BOARD_GRAD_SIZE &&
+            (game->gameMapVec[clickPosRow][clickPosCol] == 1 ||
+                game->gameMapVec[clickPosRow][clickPosCol] == -1)){
+        if(game->isWin(clickPosRow,clickPosCol) && game->gameStatus == PLAYING){
+            game->gameStatus = WIN;
+            QString s;
+            if(game->gameMapVec[clickPosRow][clickPosCol] == 1){
+                s = "Black Win!";
+            }
+            else if(game->gameMapVec[clickPosRow][clickPosCol] == -1)
+                s = "White Win!";
+            QMessageBox::StandardButton btn = QMessageBox::information(this,"Result",s);
+            if(btn == QMessageBox::Ok){
+                game->startGame(game_type);
+                game->gameStatus = PLAYING;
+            }
+        }
+    }
 
     update();
 }
