@@ -23,6 +23,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::paintEvent(QPaintEvent *event){
+    //棋盤
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing,true);
     for(int i=0;i<=BOARD_GRAD_SIZE;++i){
@@ -33,6 +34,7 @@ void MainWindow::paintEvent(QPaintEvent *event){
 
     }
 
+    //追蹤小圓點
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
 
@@ -46,6 +48,22 @@ void MainWindow::paintEvent(QPaintEvent *event){
             brush.setColor(Qt::white);
         painter.setBrush(brush);
         painter.drawRect(MARGIN + BLOCK_SIZE * clickPosCol - MARK_SIZE / 2,MARGIN + BLOCK_SIZE * clickPosRow - MARK_SIZE / 2,MARK_SIZE,MARK_SIZE);
+    }
+
+    //落棋
+    for(int i=0;i<BOARD_GRAD_SIZE;++i){
+        for(int j=0;j<BOARD_GRAD_SIZE;++j){
+            if(game->gameMapVec[i][j] == 1){
+                brush.setColor(Qt::black);
+                painter.setBrush(brush);
+                painter.drawEllipse(MARGIN + BLOCK_SIZE * j - CHESS_RADIUS, MARGIN + BLOCK_SIZE * i - CHESS_RADIUS,CHESS_RADIUS * 2,CHESS_RADIUS * 2);
+            }
+            else if(game->gameMapVec[i][j] == -1){
+                brush.setColor(Qt::white);
+                painter.setBrush(brush);
+                painter.drawEllipse(MARGIN + BLOCK_SIZE * j - CHESS_RADIUS, MARGIN + BLOCK_SIZE * i - CHESS_RADIUS,CHESS_RADIUS * 2,CHESS_RADIUS * 2);
+            }
+        }
     }
 }
 
@@ -130,3 +148,26 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 
     update();
 }
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event){
+    if(selectPos == false){
+        return;
+    }
+    else{
+        selectPos = false;
+    }
+    chessOneByPerson();
+    if(game_type == AI){
+
+    }
+}
+
+void MainWindow::chessOneByPerson(){
+    if(clickPosCol != -1 && clickPosRow != -1 &&
+            game->gameMapVec[clickPosRow][clickPosCol] == 0){
+        game->actionByPerson(clickPosRow,clickPosCol);
+    }
+
+    update();
+}
+

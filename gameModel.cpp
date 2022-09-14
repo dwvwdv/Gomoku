@@ -25,3 +25,16 @@ void gameModel::startGame(GameType type){
 
     playerFlag = true;
 }
+
+
+void gameModel::actionByPerson(int row,int col){
+    updateGameMap(row,col);
+}
+
+void gameModel::updateGameMap(int row,int col){
+    if(playerFlag)
+        gameMapVec[row][col] = 1;
+    else
+        gameMapVec[row][col] = -1;
+    playerFlag = !playerFlag;
+}
